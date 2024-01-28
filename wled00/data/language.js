@@ -6,7 +6,7 @@
 // ==========================================================================
 export {langDef, langAll, langArr, lL, selectLang, changeLang, placeH, createLang, loadLang, countingDown}; // список экспортируемых переменных
 const langDef = 'en';//Set one default language //Язык по умолчанию
-const langAll = {"en":"EN", "ru":"RU", "pl":"PL", "wl":"wL",};//All supported languages// Языки которые добавлены
+const langAll = {"en":"EN", "ru":"RU",};//All supported languages// Языки которые добавлены
 const langArr= {
   //wled_server.cpp
   "xxq" :  {
@@ -2362,7 +2362,6 @@ const langArr= {
   "pwv" :  {
     "ru": "Спасибо за установку приложения!",
     "en": "Thank you for installing my application!",
-    "pl": "спасибанама!",
   },
   "pwb" :  {
     "ru": "Следующий шаг:",
