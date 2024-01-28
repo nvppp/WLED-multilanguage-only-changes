@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+	<title class="l-pstq">Sync Settings</title>
+	<script type="module">import {changeLang} from "/language.js";changeLang();</script>
+	<script type="module" async>
+		import {langArr, lL} from "/language.js";
+		let lA=langArr;
+		var j;
+
+		var d=document;
+		var loc = false, locip, locproto = "http:";
+		function gId(s){return d.getElementById(s);}
+		function toggle(el){gId(el).classList.toggle("hide"); gId('No'+el).classList.toggle("hide");}
+		function H(){window.open("https://kno.wled.ge/interfaces/udp-notifier/");}
+		function B(){window.open(getURL("/settings"),"_self");}
+		function adj(){if (d.Sf.DI.value == 6454) {if (d.Sf.EU.value == 1) d.Sf.EU.value = 0;}
+						else if (d.Sf.DI.value == 5568) {if (d.Sf.DA.value == 0) d.Sf.DA.value = 1; if (d.Sf.EU.value == 0) d.Sf.EU.value = 1;} }
+		// https://www.educative.io/edpresso/how-to-dynamically-load-a-js-file-in-javascript
+		function loadJS(FILE_URL, async = true) {
+			let scE = d.createElement("script");
+			scE.setAttribute("src", FILE_URL);
+			scE.setAttribute("type", "text/javascript");
+			scE.setAttribute("async", async);
+			d.body.appendChild(scE);
+			// success event
+			scE.addEventListener("load", () => {
+				//console.log("File loaded");
+				GetV();SetVal();
+			});
+			// error event
+			scE.addEventListener("error", (ev) => {
+				console.log(lA["pzq"][lL], ev);
+				alert(lA["pzw"][lL]);
+			});
+		}
+		function FC() {
+			for(j=0;j<8;j++)
+			{
+				gId("G"+(j+1)).checked=gId("GS").value>>j&1;
+				gId("R"+(j+1)).checked=gId("GR").value>>j&1;
+			}
+		}
+		function GC() {
+			var a=0, b=0;
+
+			var m=1;
+			for(j=0;j<8;j++)
+			{
+				a+=gId("G"+(j+1)).checked*m;
+				b+=gId("R"+(j+1)).checked*m;
+				m*=2;
+			}
+			gId("GS").value=a;
+			gId("GR").value=b;
+		}
+		function SP(){var p = d.Sf.DI.value; gId("xp").style.display = (p > 0)?"none":"block"; if (p > 0) d.Sf.EP.value = p;}
+		function SetVal(){switch(parseInt(d.Sf.EP.value)){case 5568: d.Sf.DI.value = 5568; break; case 6454: d.Sf.DI.value = 6454; break; case 4048: d.Sf.DI.value = 4048; break; }; SP();FC();}
+		function S(){
+			let l = window.location;
+			if (l.protocol == "file:") {
+				loc = true;
+				locip = localStorage.getItem('locIp');
+				if (!locip) {
+					locip = prompt(lA["pze"][lL]);
+					localStorage.setItem('locIp', locip);
+				}
+			} else {
+				// detect reverse proxy
+				let paths = l.pathname.slice(1,l.pathname.endsWith('/')?-1:undefined).split("/");
+				if (paths.length > 2) {
+					locproto = l.protocol;
+					loc = true;
+					locip = l.hostname + (l.port ? ":" + l.port : "") + "/" + paths[0];
+				}
+			}
+			loadJS(getURL('/settings/s.js?p=4'), false);	// If we set async false, file is loaded and executed, then next statement is processed
+			if (loc) d.Sf.action = getURL('/settings/sync');
+		}
+		function getURL(path) {
+			return (loc ? locproto + "//" + locip : "") + path;
+		}
+		window.gId = gId;
+		window.H = H;
+		window.B = B;
+		window.adj = adj;
+		window.loadJS = loadJS;
+		window.FC = FC;
+		window.GC = GC;
+		window.SP = SP;
+		window.SetVal = SetVal;
+		window.S = S;
+		window.getURL = getURL;
+	</script>
+	<style>@import url("style.css");</style>
+</head>
+<body class="l_body" onload="S()">
+	<form id="form_s" name="Sf" method="post" onsubmit="GC()">
+		<div class="toprow">
+			<div class="helpB"><button type="button" onclick="H()">?</button></div>
+			<button class="l-plb" type="button" onclick="B()"><!--Back--></button><button class="l-pls" type="submit"><!--Save--></button><hr>
+		</div>
+		<h2 class="l-pstw"><!--Sync setup--></h2>
+		<h3 class="l-pste"><!--WLED Broadcast--></h3>
+		<span class="l-pstr"><!--UDP Port:--></span> <input name="UP" type="number" min="1" max="65535" class="d5" required><br>
+		<span class="l-pstt"><!--2nd Port:--></span> <input name="U2" type="number" min="1" max="65535" class="d5" required><br>
+		<h3 class="l-psty"><!--Sync groups--></h3>
+		<input name="GS" id="GS" type="number" style="display: none;"><!-- hidden inputs for bitwise group checkboxes -->
+		<input name="GR" id="GR" type="number" style="display: none;">
+		<table style="margin: 0 auto;">
+			<tr>
+				<td></td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+				<td>6</td>
+				<td>7</td>
+				<td>8</td>
+			</tr>
+			<tr>
+				<td><span class="l-pstu"><!--Send:--></span></td>
+				<td><input type="checkbox" id="G1" name="G1"></td>
+				<td><input type="checkbox" id="G2" name="G2"></td>
+				<td><input type="checkbox" id="G3" name="G3"></td>
+				<td><input type="checkbox" id="G4" name="G4"></td>
+				<td><input type="checkbox" id="G5" name="G5"></td>
+				<td><input type="checkbox" id="G6" name="G6"></td>
+				<td><input type="checkbox" id="G7" name="G7"></td>
+				<td><input type="checkbox" id="G8" name="G8"></td>
+			</tr>
+			<tr>
+				<td><span class="l-psti"><!--Receive:--></span></td>
+				<td><input type="checkbox" id="R1" name="R1"></td>
+				<td><input type="checkbox" id="R2" name="R2"></td>
+				<td><input type="checkbox" id="R3" name="R3"></td>
+				<td><input type="checkbox" id="R4" name="R4"></td>
+				<td><input type="checkbox" id="R5" name="R5"></td>
+				<td><input type="checkbox" id="R6" name="R6"></td>
+				<td><input type="checkbox" id="R7" name="R7"></td>
+				<td><input type="checkbox" id="R8" name="R8"></td>
+			</tr>
+		</table><br>
+		<span class="l-psti"><!--Receive:--></span>  <nowrap><input type="checkbox" name="RB"><span class="l-psto"><!--Brightness--></span>,</nowrap> <nowrap><input type="checkbox" name="RC"><span class="l-pstp"><!--Color--></span>,</nowrap> <nowrap><span class="l-zpu"><!--and--></span> <input type="checkbox" name="RX"><span class="l-psta"><!--Effects--></span></nowrap><br>
+		<input type="checkbox" name="SO"> <span class="l-psts"><!--Segment options--></span>, <input type="checkbox" name="SG"> <span class="l-pstd"><!--bounds--></span><br>
+		<span class="l-pstf"><!--Send notifications on direct change:--></span> <input type="checkbox" name="SD"><br>
+		<span class="l-pstg"><!--Send notifications on button press or IR:--></span> <input type="checkbox" name="SB"><br>
+		<span class="l-psth"><!--Send Alexa notifications:--></span> <input type="checkbox" name="SA"><br>
+		<span class="l-pstj"><!--Send Philips Hue change notifications:--></span> <input type="checkbox" name="SH"><br>
+		<span class="l-pstk"><!--Send Macro notifications:--></span> <input type="checkbox" name="SM"><br>
+		<span class="l-pstl"><!--UDP packet retransmissions:--></span> <input name="UR" type="number" min="0" max="30" class="d5" required><br><br>
+		<i class="l-pstz"><!--Reboot required to apply changes. --></i>
+		<hr class="sml">
+		<h3 class="l-pstx"><!--Instance List--></h3>
+		<span class="l-pstc"><!--Enable instance list:--></span> <input type="checkbox" name="NL"><br>
+		<span class="l-pstv"><!--Make this instance discoverable:--></span> <input type="checkbox" name="NB">
+		<hr class="sml">
+		<h3 class="l-pstb"><!--Realtime--></h3>
+		<span class="l-pstn"><!--Receive UDP realtime:--></span> <input type="checkbox" name="RD"><br>
+		<span class="l-pstm"><!--Use main segment only:--></span> <input type="checkbox" name="MO"><br><br>
+		<i class="l-psuq"><!--Network DMX input--></i><br>
+		<span class="l-psuw"><!--Type:--></span>
+		<select name=DI onchange="SP(); adj();">
+			<option value="5568" class="l-psue"><!--E1.31 (sACN)--></option>
+			<option value="6454" class="l-psur"><!--Art-Net--></option>
+			<option value="0" class="l-psut" selected><!--Custom port--></option>
+		</select><br>
+		<div id=xp><span class="l-psuy"><!--Port:--></span> <input name="EP" type="number" min="1" max="65535" value="5568" class="d5" required><br></div>
+		<span class="l-psuu"><!--Multicast:--></span> <input type="checkbox" name="EM"><br>
+		<span class="l-psui"><!--Start universe:--></span> <input name="EU" type="number" min="0" max="63999" required><br>
+		<span class="l-psuo"><!--<i>Reboot required.</i> Check out--></span> <a href="https://github.com/LedFx/LedFx" target="_blank">LedFx</a>!<br>
+		<span class="l-psup"><!--Skip out-of-sequence packets:--></span> <input type="checkbox" name="ES"><br>
+		<span class="l-psua"><!--DMX start address:--></span> <input name="DA" type="number" min="1" max="510" required><br>
+		<span class="l-psus"><!--DMX segment spacing:--></span> <input name="XX" type="number" min="0" max="150" required><br>
+		<span class="l-psud"><!--E1.31 port priority:--></span> <input name="PY" type="number" min="0" max="200" required><br>
+		<span class="l-psuf"><!--DMX mode:--></span>
+		<select name=DM>
+			<option value="0" class="l-plsg"><!--Disabled--></option>
+			<option value="1" class="l-psug"><!--Single RGB--></option>
+			<option value="2" class="l-psuh"><!--Single DRGB--></option>
+			<option value="3" class="l-psuj"><!--Effect--></option>
+			<option value="7" class="l-psuk"><!--Effect + White--></option>
+			<option value="8" class="l-psul"><!--Effect Segment--></option>
+			<option value="9" class="l-psuz"><!--Effect Segment + White--></option>
+			<option value="4" class="l-psux"><!--Multi RGB--></option>
+			<option value="5" class="l-psuc"><!--Dimmer + Multi RGB--></option>
+			<option value="6" class="l-psuv"><!--Multi RGBW--></option>
+			<option value="10" class="l-psub"><!--Preset--></option>
+		</select><br>
+		<a class="l-psun" href="https://kno.wled.ge/interfaces/e1.31-dmx/" target="_blank"><!--E1.31 info--></a><br>
+		<span class="l-psum"><!--Timeout:--></span> <input name="ET" type="number" min="1" max="65000" required> <span class="l-cw"><!--ms--></span><br>
+		<span class="l-pspq">Force max brightness:--></span> <input type="checkbox" name="FB"><br>
+		<span class="l-pspw"><!--Disable realtime gamma correction:--></span> <input type="checkbox" name="RG"><br>
+		<span class="l-pspe"><!--Realtime LED offset:--></span> <input name="WO" type="number" min="-255" max="255" required>
+		<hr class="sml">
+		<h3 class="l-pspr"><!--Alexa Voice Assistant--></h3>
+		<div id="NoAlexa" class="hide">
+			<i class="warn l-pspt"><!--This firmware build does not include Alexa support.--></i><br><br>
+		</div>
+		<div id="Alexa">
+			<span class="l-pspy"><!--Emulate Alexa device:--></span> <input type="checkbox" name="AL"><br>
+			<span class="l-pspu"><!--Alexa invocation name:--></span> <input type="text" name="AI" maxlength="32"><br>
+			<span class="l-pspi"><!--Also emulate devices to call the first--></span> <input name="AP" type="number" class="s" min="0" max="9" required> <span class="l-pspo"><!--presets--></span><br><br>
+		</div>
+		<hr class="sml">
+		<div class="warn l-pspp"><!--&#9888; <b>MQTT and Hue sync all connect to external hosts!<br>
+			This may impact the responsiveness of WLED.</b><br>-->
+		</div>
+		<span class="l-pspa"><!--For best results, only use one of these services at a time.<br>
+			(alternatively, connect a second ESP to them and use the UDP sync)--></span>
+		<hr class="sml">
+		<h3 class="l-psps"><!--MQTT--></h3>
+		<div id="NoMQTT" class="hide">
+			<i class="warn l-pspd"><!--This firmware build does not include MQTT support.--><br></i>
+		</div>
+		<div id="MQTT">
+			<span class="l-pspf"><!--Enable MQTT:--></span> <input type="checkbox" name="MQ"><br>
+			<span class="l-pspg"><!--Broker:--></span> <input type="text" name="MS" maxlength="32">
+			<span class="l-psph"><!--Port:--></span> <input name="MQPORT" type="number" min="1" max="65535" class="d5"><br>
+			<span class="l-pspj"><!--<b>The MQTT credentials are sent over an unsecured connection.<br>
+				Never use the MQTT password for another service!</b>--></span><br>
+			<span class="l-pspk"><!--Username:--></span> <input type="text" name="MQUSER" maxlength="40"><br>
+			<span class="l-pspl"><!--Password:--></span> <input type="password" name="MQPASS" maxlength="64"><br>
+			<span class="l-pspz"><!--Client ID:--></span> <input type="text" name="MQCID" maxlength="40"><br>
+			<span class="l-pspx"><!--Device Topic:--></span> <input type="text" name="MD" maxlength="32"><br>
+			<span class="l-pspc"><!--Group Topic:--></span> <input type="text" name="MG" maxlength="32"><br>
+			<span class="l-pspv"><!--Publish on button press:--></span> <input type="checkbox" name="BM"><br>
+			<span class="l-pspb"><!--Retain brightness & color messages:--></span> <input type="checkbox" name="RT"><br>
+			<i class="l-pspn"><!--Reboot required to apply changes. --></i> <a class="l-pspm" href="https://kno.wled.ge/interfaces/mqtt/" target="_blank"><!--MQTT info--></a>
+		</div>
+		<h3 class="l-psoq"><!--Philips Hue--></h3>
+		<div id="NoHue" class="hide">
+			<em class="warn l-psow"><!--This firmware build does not include Philips Hue support.--></em><br>
+		</div>
+		<div id="Hue">
+			<i class="l-psoe"><!--You can find the bridge IP and the light number in the 'About' section of the hue app.--></i><br>
+			<span class="l-psor"><!--Poll Hue light--></span> <input name="HL" type="number" min="1" max="99" > <span class="l-psot"><!--every--></span> <input name="HI" type="number" min="100" max="65000"> <span class="l-cw"><!--ms--></span>: <input type="checkbox" name="HP"><br>
+			<span class="l-psoy"><!--Then, receive--></span> <input type="checkbox" name="HO"> <span class="l-psou"><!--On/Off--></span>, <input type="checkbox" name="HB"> <span class="l-psto"><!--Brightness--></span>, <span class="l-zpu"><!--and--></span> <input type="checkbox" name="HC"> <span class="l-pstp"><!--Color--></span><br>
+			<span class="l-psoi"><!--Hue Bridge IP:--></span><br>
+			<input name="H0" type="number" class="s" min="0" max="255" > .
+			<input name="H1" type="number" class="s" min="0" max="255" > .
+			<input name="H2" type="number" class="s" min="0" max="255" > .
+			<input name="H3" type="number" class="s" min="0" max="255" ><br>
+			<span class="l-psoo"><!--<b>Press the pushlink button on the bridge, after that save this page!</b><br>
+				(when first connecting)--></span><br>
+			<span class="l-psop"><!--Hue status:--></span> <span class="sip"> <span class="l-psoa"><!--Disabled in this build--></span> </span>
+		</div>
+		<h3 class="l-psos"><!--Serial--></h3>
+		<span class="l-psod"><!--Baud rate:--></span>
+		<select name=BD>
+			<option value="1152">115200</option>
+			<option value="2304">230400</option>
+			<option value="4608">460800</option>
+			<option value="5000">500000</option>
+			<option value="5760">576000</option>
+			<option value="9216">921600</option>
+			<option value="10000">1000000</option>
+			<option value="15000">1500000</option>
+		</select><br>
+		<i class="l-psof"><!--Keep at 115200 to use Improv. Some boards may not support high rates.--></i>
+		<hr>
+		<button class="l-plb" type="button" onclick="B()"><!--Back--></button><button class="l-pls" type="submit"><!--Save--><!-- Autoreplaced from language.js --></button>
+	</form>
+</body>
+</html>

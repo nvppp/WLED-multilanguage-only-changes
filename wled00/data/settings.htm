@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+	<title class="l-psq">WLED Settings</title>
+	<script type="module">import {changeLang} from "/language.js";changeLang();</script>
+	<script type="module" async>
+		import {langArr, lL} from "/language.js";
+		let lA=langArr;
+
+		var d=document;
+		var loc = false, locip, locproto = "http:";
+		function gId(n){return d.getElementById(n);}
+		// https://www.educative.io/edpresso/how-to-dynamically-load-a-js-file-in-javascript
+		function loadJS(FILE_URL, async = true) {
+			let scE = d.createElement("script");
+			scE.setAttribute("src", FILE_URL);
+			scE.setAttribute("type", "text/javascript");
+			scE.setAttribute("async", async);
+			d.body.appendChild(scE);
+			// success event 
+			scE.addEventListener("load", () => {
+				//console.log("File loaded");
+				GetV();
+			});
+			// error event
+			scE.addEventListener("error", (ev) => {
+				console.log(lA["pzq"][lL], ev);
+				alert(lA["pzw"][lL]);
+			});
+		}
+		function S() {
+			let l = window.location;
+			if (l.protocol == "file:") {
+				loc = true;
+				locip = localStorage.getItem('locIp');
+				if (!locip) {
+					locip = prompt(lA["pze"][lL]);
+					localStorage.setItem('locIp', locip);
+				}
+			} else {
+				// detect reverse proxy
+				let path = l.pathname;
+				let paths = path.slice(1,path.endsWith('/')?-1:undefined).split("/");
+				if (paths.length > 1) {
+					locproto = l.protocol;
+					loc = true;
+					locip = l.hostname + (l.port ? ":" + l.port : "") + "/" + paths[0];
+				}
+			}
+			loadJS(getURL('/settings/s.js?p=0'), false);	// If we set async false, file is loaded and executed, then next statement is processed
+		}
+		function getURL(path) {
+			return (loc ? locproto + "//" + locip : "") + path;
+		}
+		window.S = S;
+		window.getURL = getURL;
+	</script>
+	<style>
+		body {
+			text-align: center;
+			background: #222;
+			height: 100px;
+			margin: 0;
+		}
+		html {
+			--h: 9vh;
+		}
+		button {
+			background: #333;
+			color: #fff;
+			font-family: Verdana, Helvetica, sans-serif;
+			display: block;
+			border: 1px solid #333;
+			border-radius: var(--h);
+			font-size: 6vmin;
+			height: var(--h);
+			width: calc(100% - 40px);
+			margin: 2vh auto 0;
+			cursor: pointer;
+		}
+		.l_body { /*эффект для устранения мерцания замены текста на странице*/
+			animation: fi 0.3s .7s both;
+		}
+		@keyframes fi {
+			from { opacity: 0; }
+			to   { opacity: 1; }
+		}
+	</style>
+</head>
+<body class="l_body" onload="S()">
+	<button class="l-plb" type=submit id="b" onclick="window.location=getURL('/')"><!--Back--></button>
+	<button class="l-psw" type="submit" onclick="window.location=getURL('/settings/wifi')"><!--WiFi Setup--></button>
+	<button class="l-psp" type="submit" onclick="window.location=getURL('/settings/leds')"><!--LED Preferences--></button>
+	<button class="l-psc" id="2dbtn" type="submit" onclick="window.location=getURL('/settings/2D')"><!--2D Configuration--></button>
+	<button class="l-psi" type="submit" onclick="window.location=getURL('/settings/ui')"><!--User Interface--></button>
+	<button class="l-psd" id="dmxbtn" style="display:none;" type="submit" onclick="window.location=getURL('/settings/dmx')"><!--DMX Output--></button>
+	<button class="l-psf" type="submit" onclick="window.location=getURL('/settings/sync')"><!--Sync Interfaces--></button>
+	<button class="l-pst" type="submit" onclick="window.location=getURL('/settings/time')"><!--Time & Macros--></button>
+	<button class="l-psu" type="submit" onclick="window.location=getURL('/settings/um')"><!--Usermods--></button>
+	<button class="l-psl" type="submit" onclick="window.location=getURL('/settings/lang')"><!--Language--></button>
+	<button class="l-pss" type="submit" onclick="window.location=getURL('/settings/sec')"><!--Security & Updates--><!-- Autoreplaced from language.js --></button>
+</body>
+</html>

@@ -3,8 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
-	<script type="module">import {changeLang} from "/language.js"; changeLang();</script>
 	<title class="l-pmq">WLED Message</title>
+	<script type="module">import {changeLang,countingDown} from "/language.js"; changeLang();countingDown()</script>
 	<script>
 		function B() { window.history.back() };
 		function RS() { window.location = "../settings"; }
@@ -12,7 +12,7 @@
 	</script>
 	<style>@import url("style.css");</style>
 </head>
-<body>
+<body class="l_body">
 	<h2>Sample Message.</h2>
 	Sample Detail.
 </body>

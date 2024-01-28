@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+	<title class="l-plq">WLED Language Settings</title>
+	<script type="module">import {createLang, loadLang, changeLang} from "/language.js";createLang("h2");loadLang();changeLang();</script>
+	<script type="module" async>
+		import {langArr, lL} from "/language.js";
+		let lA=langArr;
+		let d=document;
+		let loc = false, locip, locproto = "http:";
+		function H(){window.open("https://kno.wled.ge/features/settings/");}
+		function B(){window.open(getURL("/settings"),"_self");}
+		// function gId(n){return d.getElementById(n);}
+		// function fS(){d.Sf.submit();} // <button type=submit> sometimes didn't work
+		// https://www.educative.io/edpresso/how-to-dynamically-load-a-js-file-in-javascript
+		function loadJS(FILE_URL, async = true) {
+			let scE = d.createElement("script");
+			scE.setAttribute("src", FILE_URL);
+			scE.setAttribute("type", "text/javascript");
+			scE.setAttribute("async", async);
+			d.body.appendChild(scE);
+			// success event
+			scE.addEventListener("load", () => {
+				//console.log("File loaded");
+				GetV();
+				pinDropdowns(); // convert INPUT to SELECT for pins
+			});
+			// error event
+			scE.addEventListener("error", (ev) => {
+				console.log(lA["pzq"][lL], ev);
+				alert(lA["pzw"][lL]);
+			});
+		}
+		function S() {
+			let l = window.location;
+			if (l.protocol === "file:") {
+				loc = true;
+				locip = localStorage.getItem('locIp');
+				if (!locip) {
+					locip = prompt(lA["pze"][lL]);
+					localStorage.setItem('locIp', locip);
+				}
+			} else {
+				// detect reverse proxy
+				let path = l.pathname;
+				let paths = path.slice(1,path.endsWith('/')?-1:undefined).split("/");
+				if (paths.length > 2) {
+					locproto = l.protocol;
+					loc = true;
+					locip = l.hostname + (l.port ? ":" + l.port : "") + "/" + paths[0];
+				}
+			}
+			loadJS(getURL('/settings/s.js?p=11'), false);	// If we set async false, file is loaded and executed, then next statement is processed
+			if (loc) d.Sf.action = getURL('/settings/lang');
+		}
+		function getURL(path) {
+				return (loc ? locproto + "//" + locip : "") + path;
+		}
+		window.H = H;
+		window.B = B;
+		window.loadJS = loadJS;
+		window.S = S;
+		window.getURL = getURL;
+	</script>
+	<style>@import url("style.css");</style>
+</head>
+<body class="l_body" onload="S()">
+	<form id="form_s" name="Sf" method="post">
+		<div class="toprow">
+			<div class="helpB"><button type="button" onclick="H()">?</button></div>
+			<button class="l-plb" type="button" onclick="B()"><!--Back--></button><button class="l-pls" type="button" onclick="fS()"><!--Save--></button><hr>
+		</div>
+			<div id="translate"></div><br><br>
+		<hr>
+		<button class="l-plb" type="button" onclick="B()"><!--Back--></button><button class="l-pls" type="button" onclick="fS()"><!--Save--><!-- Autoreplaced from language.js --></button>
+	</form>
+</body>
+</html>
